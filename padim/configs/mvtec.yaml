@@ -1,0 +1,84 @@
+params:
+  epochs: 300
+  device: cuda:0
+  category: bottle
+  cross_validation: 0
+  batch_size: 4
+  tracking_uri: file:///app/PaDiM/padim/mlruns
+  experiment_name: mvtec
+  run_name: ${params.category}_cv${params.cross_validation}
+
+model:
+  name:
+  args:
+
+transforms:
+  train:
+    - name:
+      args:
+  val:
+    - name:
+      args:
+  test:
+    - name:
+      args:
+
+datasets:
+  train:
+    name: padim.datasets - MVTecDataset
+    args:
+      data_dir: /data
+      query_list:
+        - cv${params.cross_validation}=='train' & category=='${params.category}'
+      debug: False
+  val:
+    name: padim.datasets - MVTecDataset
+    args:
+      data_dir: /data
+      query_list:
+        - cv${params.cross_validation}=='val' & category=='${params.category}'
+      debug: False
+  test:
+    name: padim.datasets - MVTecDataset
+    args:
+      data_dir: /data
+      query_list:
+        - cv${params.cross_validation}=='test' & category=='${params.category}'
+      debug: false
+
+dataloaders:
+  train:
+    name: torch.utils.data - DataLoader
+    args:
+      batch_size: ${params.batch_size}
+      num_workers: ${params.batch_size}
+      pin_memory: True
+      shuffle: True
+  val:
+    name: torch.utils.data - DataLoader
+    args:
+      batch_size: ${params.batch_size}
+      num_workers: ${params.batch_size}
+      pin_memory: True
+      shuffle: True
+  test:
+    name: torch.utils.data - DataLoader
+    args:
+      batch_size: ${params.batch_size}
+      num_workers: ${params.batch_size}
+      pin_memory: True
+      shuffle: True
+
+optimizer:
+  name:
+  args:
+
+scheduler:
+  name:
+  args:
+
+criterions:
+
+early_stopping:
+  name: padim.utils - EarlyStopping
+  args:
