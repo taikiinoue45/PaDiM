@@ -8,7 +8,7 @@
 ![isort](https://github.com/taikiinoue45/PaDiM/workflows/isort/badge.svg)
 ![mypy](https://github.com/taikiinoue45/PaDiM/workflows/mypy/badge.svg)
 
-PyTorch re-implementation of
+PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for Anomaly Detection and Localization](https://arxiv.org/abs/2011.08785)
 
 <br>
 
@@ -16,21 +16,21 @@ PyTorch re-implementation of
 
 | category   | Paper | My Implementation |
 | :-         | :-    | :-                |
-| zipper     | -     | -                 |
-| wood       | -     | -                 |
-| transistor | -     | -                 |
-| toothbrush | -     | -                 |
-| tile       | -     | -                 |
-| screw      | -     | -                 |
-| pill       | -     | -                 |
-| metal_nut  | -     | -                 |
-| leather    | -     | -                 |
-| hazelnut   | -     | -                 |
-| grid       | -     | -                 |
-| carpet     | -     | -                 |
-| capsule    | -     | -                 |
-| cable      | -     | -                 |
-| bottle     | -     | -                 |
+| zipper     | 0.985 | -                 |
+| wood       | 0.949 | -                 |
+| transistor | 0.975 | -                 |
+| toothbrush | 0.988 | -                 |
+| tile       | 0.941 | -                 |
+| screw      | 0.985 | -                 |
+| pill       | 0.957 | -                 |
+| metal_nut  | 0.972 | -                 |
+| leather    | 0.992 | -                 |
+| hazelnut   | 0.982 | -                 |
+| grid       | 0.973 | -                 |
+| carpet     | 0.991 | -                 |
+| capsule    | 0.985 | -                 |
+| cable      | 0.967 | -                 |
+| bottle     | 0.983 | -                 |
 
 <br>
 
