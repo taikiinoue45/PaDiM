@@ -7,28 +7,22 @@ from typing import Any
 import torch
 from albumentations import Compose
 from omegaconf.dictconfig import DictConfig
+from torch import Tensor
 from torch.nn import Module
-from torch.optim.lr_scheduler import _LRScheduler
-from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, Dataset
-from tqdm import tqdm
-
-from padim.utils import EarlyStopping
 
 
 class BaseRunner(ABC):
     def __init__(self, cfg: DictConfig) -> None:
-        super().__init__()
 
+        super().__init__()
         self.cfg = cfg
         self.transforms = {k: self._init_transforms(k) for k in self.cfg.transforms.keys()}
         self.datasets = {k: self._init_datasets(k) for k in self.cfg.datasets.keys()}
         self.dataloaders = {k: self._init_dataloaders(k) for k in self.cfg.dataloaders.keys()}
         self.model = self._init_model().to(self.cfg.params.device)
-        self.optimizer = self._init_optimizer()
-        self.scheduler = self._init_scheduler()
-        self.criterions = {k: self._init_criterions(k) for k in self.cfg.criterions.keys()}
-        self.early_stopping = self._init_early_stopping()
+
+        self.embedding_ids = torch.randperm(1792)[: self.cfg.params.num_embedding]
 
     def _init_transforms(self, key: str) -> Compose:
 
@@ -56,30 +50,6 @@ class BaseRunner(ABC):
         attr = self._get_attr(cfg.name)
         return attr(**cfg.get("args", {}))
 
-    def _init_criterions(self, key: str) -> Module:
-
-        cfg = self.cfg.criterions[key]
-        attr = self._get_attr(cfg.name)
-        return attr(**cfg.get("args", {}))
-
-    def _init_optimizer(self) -> Optimizer:
-
-        cfg = self.cfg.optimizer
-        attr = self._get_attr(cfg.name)
-        return attr(**cfg.get("args", {}), params=self.model.parameters())
-
-    def _init_scheduler(self) -> _LRScheduler:
-
-        cfg = self.cfg.scheduler
-        attr = self._get_attr(cfg.name)
-        return attr(**cfg.get("args", {}), optimizer=self.optimizer)
-
-    def _init_early_stopping(self) -> EarlyStopping:
-
-        cfg = self.cfg.early_stopping
-        attr = self._get_attr(cfg.name)
-        return attr(**cfg.get("args", {}))
-
     def _get_attr(self, name: str) -> Any:
 
         module_path, attr_name = name.split(" - ")
@@ -88,32 +58,12 @@ class BaseRunner(ABC):
 
     def run(self) -> None:
 
-        pbar = tqdm(range(1, self.cfg.params.epochs + 1), desc="epochs")
-        for epoch in pbar:
-            self._train(epoch)
-            val_loss = self._validate(epoch)
-            self.scheduler.step()
-
-            if self.early_stopping(val_loss):
-                torch.save(self.model.state_dict(), "model.pth")
-                os.makedirs(f"epochs/{epoch}")
-                self._test(epoch)
-                print(f"Early stopped at {epoch} epoch")
-                sys.exit(0)
-
-            if epoch % 10 == 0:
-                os.makedirs(f"epochs/{epoch}")
-                self._test(epoch)
-
+        mean, covariance = self._train()
+        self._test(mean, covariance)
         torch.save(self.model.state_dict(), "model.pth")
 
     @abstractmethod
-    def _train(self, epoch: int) -> None:
-
-        raise NotImplementedError()
-
-    @abstractmethod
-    def _validate(self, epoch: int) -> float:
+    def _train(self, epoch: int) -> Tensor:
 
         raise NotImplementedError()
 

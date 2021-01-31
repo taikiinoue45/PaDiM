@@ -28,7 +28,6 @@ def main(cfg: DictConfig) -> None:
     runner.run()
 
     mlflow.log_artifacts(".hydra", "hydra")
-    mlflow.log_artifacts("epochs", "epochs")
 
 
 if __name__ == "__main__":
