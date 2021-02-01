@@ -25,7 +25,7 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 | pill       | 0.957 | 0.958             |
 | metal_nut  | 0.972 | 0.992             |
 | leather    | 0.992 | 1.000             |
-| hazelnut   | 0.982 | -                 |
+| hazelnut   | 0.982 | 0.985             |
 | grid       | 0.973 | 0.959             |
 | carpet     | 0.991 | 0.997             |
 | capsule    | 0.985 | 0.937             |
