@@ -25,14 +25,3 @@ class WideResNet50(Module):
         feature1, feature2, feature3 = self.features
         self.features = []
         return (feature1, feature2, feature3)
-
-
-if __name__ == "__main__":
-
-    import torch
-
-    model = WideResNet50().to("cuda:0")
-    x = torch.randn(32, 3, 224, 224).to("cuda:0")
-    for i in range(3):
-        feature1, feature2, feature3 = model(x)
-    print(model.features)

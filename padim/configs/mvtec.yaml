@@ -1,11 +1,12 @@
 params:
-  epochs: 300
-  device: cuda:0
+  device: cuda:1
   category: bottle
+  height: 256
+  width: 256
   cross_validation: 0
   batch_size: 4
   num_embedding: 550
-  tracking_uri: file:///app/PaDiM/padim/mlruns
+  tracking_uri: file:///dgx/github/PaDiM/padim/mlruns
   experiment_name: mvtec
   run_name: ${params.category}_cv${params.cross_validation}
 
@@ -17,13 +18,8 @@ transforms:
   train:
     - name: albumentations - Resize
       args:
-        height: 256
-        width: 256
-        p: 1
-    - name: albumentations - CenterCrop
-      args:
-        height: 224
-        width: 224
+        height: ${params.height}
+        width: ${params.width}
         p: 1
     - name: albumentations - Normalize
       args:
@@ -36,13 +32,8 @@ transforms:
   test:
     - name: albumentations - Resize
       args:
-        height: 256
-        width: 256
-        p: 1
-    - name: albumentations - CenterCrop
-      args:
-        height: 224
-        width: 224
+        height: ${params.height}
+        width: ${params.width}
         p: 1
     - name: albumentations - Normalize
       args:

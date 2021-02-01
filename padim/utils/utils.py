@@ -1,10 +1,22 @@
+import subprocess
+
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
+import torch.nn.functional as F
 from mpl_toolkits.axes_grid1 import ImageGrid
 from numpy import ndarray as NDArray
+from torch import Tensor
 
 
-def savefig(imgs: NDArray, masks: NDArray, amaps: NDArray) -> None:
+def mean_smoothing(amaps: Tensor, kernel_size: int = 21) -> Tensor:
+
+    mean_kernel = torch.ones(1, 1, kernel_size, kernel_size) / kernel_size ** 2
+    mean_kernel = mean_kernel.to(amaps.device)
+    return F.conv2d(amaps, mean_kernel, padding=kernel_size // 2, groups=1)
+
+
+def savegif(category: str, imgs: NDArray, masks: NDArray, amaps: NDArray) -> None:
 
     for i, (img, mask, amap) in enumerate(zip(imgs, masks, amaps)):
 
@@ -34,14 +46,19 @@ def savefig(imgs: NDArray, masks: NDArray, amaps: NDArray) -> None:
         grid[1].set_title("Ground Truth", fontsize=14)
 
         grid[2].imshow(img)
-        im = grid[2].imshow(amap, alpha=0.3, cmap="jet")
+        im = grid[2].imshow(amap, alpha=0.3, cmap="jet", vmin=0, vmax=1)
         grid[2].tick_params(labelbottom=False, labelleft=False, bottom=False, left=False)
         grid[2].cax.colorbar(im)
         grid[2].cax.toggle_label(True)
         grid[2].set_title("Anomaly Map", fontsize=14)
 
-        plt.savefig(f"{i}.png", bbox_inches="tight")
+        plt.savefig(f"{category}_{i}.png", bbox_inches="tight")
         plt.close()
+
+    # NOTE(inoue): The gif files converted by PIL or imageio were low-quality.
+    #              So, I used the conversion command (ImageMagick) instead.
+    subprocess.run(f"convert -delay 100 -loop 0 {category}_*.png {category}.gif", shell=True)
+    subprocess.run(f"rm {category}_*.png", shell=True)
 
 
 def denormalize(img: NDArray) -> NDArray:

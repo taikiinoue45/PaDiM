@@ -1,13 +1,11 @@
-import os
-import sys
 from abc import ABC, abstractmethod
 from importlib import import_module
-from typing import Any
+from typing import Any, Tuple
 
 import torch
 from albumentations import Compose
+from numpy import ndarray as NDArray
 from omegaconf.dictconfig import DictConfig
-from torch import Tensor
 from torch.nn import Module
 from torch.utils.data import DataLoader, Dataset
 
@@ -63,11 +61,11 @@ class BaseRunner(ABC):
         torch.save(self.model.state_dict(), "model.pth")
 
     @abstractmethod
-    def _train(self, epoch: int) -> Tensor:
+    def _train(self) -> Tuple[NDArray, NDArray]:
 
         raise NotImplementedError()
 
     @abstractmethod
-    def _test(self, epoch: int) -> None:
+    def _test(self, means: NDArray, covariances: NDArray) -> None:
 
         raise NotImplementedError()

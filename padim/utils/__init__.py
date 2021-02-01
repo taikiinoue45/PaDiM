@@ -1,4 +1,4 @@
-from .utils import savefig
+from .utils import mean_smoothing, savegif
 
 
-__all__ = ["savefig"]
+__all__ = ["mean_smoothing", "savegif"]
