@@ -1,8 +1,8 @@
 params:
-  device: cuda:1
+  device: cuda:0
   category: bottle
-  height: 256
-  width: 256
+  height: 224
+  width: 224
   cross_validation: 0
   batch_size: 4
   num_embedding: 550

@@ -16,21 +16,21 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 
 | category   | Paper | My Implementation |
 | :-         | :-    | :-                |
-| zipper     | 0.985 | -                 |
-| wood       | 0.949 | -                 |
-| transistor | 0.975 | -                 |
-| toothbrush | 0.988 | -                 |
-| tile       | 0.941 | -                 |
-| screw      | 0.985 | -                 |
-| pill       | 0.957 | -                 |
-| metal_nut  | 0.972 | -                 |
-| leather    | 0.992 | -                 |
+| zipper     | 0.985 | 0.923             |
+| wood       | 0.949 | 0.992             |
+| transistor | 0.975 | 0.998             |
+| toothbrush | 0.988 | 0.883             |
+| tile       | 0.941 | 0.994             |
+| screw      | 0.985 | 0.815             |
+| pill       | 0.957 | 0.958             |
+| metal_nut  | 0.972 | 0.992             |
+| leather    | 0.992 | 1.000             |
 | hazelnut   | 0.982 | -                 |
-| grid       | 0.973 | -                 |
-| carpet     | 0.991 | -                 |
-| capsule    | 0.985 | -                 |
-| cable      | 0.967 | -                 |
-| bottle     | 0.983 | -                 |
+| grid       | 0.973 | 0.959             |
+| carpet     | 0.991 | 0.997             |
+| capsule    | 0.985 | 0.937             |
+| cable      | 0.967 | 0.930             |
+| bottle     | 0.983 | 1.000             |
 
 <br>
 
