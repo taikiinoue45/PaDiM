@@ -18,14 +18,6 @@ class MVTecDataset(Dataset):
         debug: bool,
     ) -> None:
 
-        """
-        Args:
-            data_dir (Union[Path, str]): Path to directory with info.csv, images/ and masks/
-            query_list (List[str]): Query list to extract arbitrary rows from info.csv
-            transforms (Composite): List of transforms
-            debug (bool): If true, transformsed images are saved
-        """
-
         self.data_dir = Path(data_dir)
         self.transforms = transforms
         self.debug = debug
@@ -66,7 +58,7 @@ class MVTecDataset(Dataset):
         plt.tick_params(labelbottom=False, labelleft=False, bottom=False, left=False)
 
         plt.subplot(132)
-        plt.title("Ground Truth Mask")
+        plt.title("Ground Truth")
         plt.imshow(mask)
         plt.tick_params(labelbottom=False, labelleft=False, bottom=False, left=False)
 
