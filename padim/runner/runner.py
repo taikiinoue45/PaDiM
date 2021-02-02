@@ -7,17 +7,17 @@ import torch.nn.functional as F
 from numpy import ndarray as NDArray
 from scipy.spatial.distance import mahalanobis
 from torch import Tensor
-from torch.utils.data import DataLoader
+from tqdm import tqdm
+from typing_extensions import Literal
 
-from padim.metrics import compute_auroc
 from padim.runner import BaseRunner
-from padim.utils import mean_smoothing, savegif
+from padim.utils import compute_auroc, mean_smoothing, savegif
 
 
 class Runner(BaseRunner):
     def _train(self) -> Tuple[NDArray, NDArray]:
 
-        embeddings, _ = self._embed(self.dataloaders["train"])
+        embeddings, _ = self._embed("train")
         b, c, h, w = embeddings.shape
         embeddings = embeddings.reshape(b, c, h * w)
 
@@ -31,7 +31,7 @@ class Runner(BaseRunner):
 
     def _test(self, means: NDArray, cvars: NDArray) -> None:
 
-        embeddings, artifacts = self._embed(self.dataloaders["test"])
+        embeddings, artifacts = self._embed("test")
         b, c, h, w = embeddings.shape
         embeddings = embeddings.reshape(b, c, h * w)
 
@@ -55,24 +55,25 @@ class Runner(BaseRunner):
         mlflow.log_metric("AUROC", auroc)
         savegif(
             self.cfg.params.category,
-            np.array(artifacts["img"]),
+            np.array(artifacts["image"]),
             np.array(artifacts["mask"]),
             amaps,
         )
 
-    def _embed(self, dataloader: DataLoader) -> Tuple[NDArray, Dict[str, List[NDArray]]]:
+    def _embed(self, mode: Literal["train", "test"]) -> Tuple[NDArray, Dict[str, List[NDArray]]]:
 
         self.model.eval()
         features: Dict[str, List[Tensor]] = {"feature1": [], "feature2": [], "feature3": []}
-        artifacts: Dict[str, List[NDArray]] = {"img": [], "mask": []}
-        for _, imgs, masks in dataloader:
+        artifacts: Dict[str, List[NDArray]] = {"image": [], "mask": []}
+        pbar = tqdm(self.dataloaders[mode], desc=f"{self.cfg.params.category} - {mode}")
+        for _, imgs, masks in pbar:
 
             with torch.no_grad():
                 feature1, feature2, feature3 = self.model(imgs.to(self.cfg.params.device))
             features["feature1"].append(feature1)
             features["feature2"].append(feature2)
             features["feature3"].append(feature3)
-            artifacts["img"].extend(imgs.permute(0, 2, 3, 1).cpu().detach().numpy())
+            artifacts["image"].extend(imgs.permute(0, 2, 3, 1).cpu().detach().numpy())
             artifacts["mask"].extend(masks.cpu().detach().numpy())
 
         embeddings = torch.cat(features["feature1"], dim=0)

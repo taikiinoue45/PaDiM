@@ -1,4 +1,11 @@
 # Additional
+launch.json
+settings.json
+.DS_Store
+Untitled.ipynb
+sandbox.ipynb
+sandbox.py
+*.pth
 outputs/
 mlruns/
 

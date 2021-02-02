@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from pathlib import Path
 
 import hydra
 import mlflow
@@ -11,11 +12,12 @@ from padim.runner import Runner
 
 log = logging.getLogger(__name__)
 
-config_path = sys.argv[1]
+config_path = str(Path(sys.argv[1]).parent)
+config_name = str(Path(sys.argv[1]).stem)
 sys.argv.pop(1)
 
 
-@hydra.main(config_path)
+@hydra.main(config_path=config_path, config_name=config_name)
 def main(cfg: DictConfig) -> None:
 
     mlflow.set_tracking_uri(cfg.params.tracking_uri)
