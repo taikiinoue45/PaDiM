@@ -54,6 +54,7 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 | cable      | 0.888 | 0.918             |
 | bottle     | 0.948 | 0.951             |
 
+<br>
 
 ## 3. Graphical Results
 
