@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import mlflow
 import numpy as np
@@ -11,7 +11,13 @@ from tqdm import tqdm
 from typing_extensions import Literal
 
 from padim.runner import BaseRunner
-from padim.utils import compute_auroc, mean_smoothing, savegif
+from padim.utils import (
+    compute_pro_score,
+    compute_roc_score,
+    draw_roc_and_pro_curve,
+    mean_smoothing,
+    savegif,
+)
 
 
 class Runner(BaseRunner):
@@ -24,7 +30,7 @@ class Runner(BaseRunner):
         means = embeddings.mean(axis=0)
         cvars = np.zeros((c, c, h * w))
         identity = np.identity(c)
-        for i in range(h * w):
+        for i in tqdm(range(h * w), desc=f"{self.cfg.params.category} - compute covariance"):
             cvars[:, :, i] = np.cov(embeddings[:, :, i], rowvar=False) + 0.01 * identity
 
         return (means, cvars)
@@ -36,7 +42,7 @@ class Runner(BaseRunner):
         embeddings = embeddings.reshape(b, c, h * w)
 
         distances = []
-        for i in range(h * w):
+        for i in tqdm(range(h * w), desc=f"{self.cfg.params.category} - compute distance"):
             mean = means[:, i]
             cvar_inv = np.linalg.inv(cvars[:, :, i])
             distance = [mahalanobis(e[:, i], mean, cvar_inv) for e in embeddings]
@@ -51,28 +57,31 @@ class Runner(BaseRunner):
         amaps = (amaps - amaps.min()) / (amaps.max() - amaps.min())
         amaps = amaps.squeeze().numpy()
 
-        auroc = compute_auroc(amaps, np.array(artifacts["mask"]))
-        mlflow.log_metric("AUROC", auroc)
+        roc_score = compute_roc_score(amaps, np.array(artifacts["mask"]), artifacts["stem"])
+        pro_score = compute_pro_score(amaps, np.array(artifacts["mask"]))
+        mlflow.log_metrics({"roc_score": roc_score, "pro_score": pro_score})
+        draw_roc_and_pro_curve(roc_score, pro_score)
         savegif(
-            self.cfg.params.category,
             np.array(artifacts["image"]),
-            np.array(artifacts["mask"]),
             amaps,
+            np.array(artifacts["mask"]),
+            artifacts["stem"],
         )
 
     def _embed(self, mode: Literal["train", "test"]) -> Tuple[NDArray, Dict[str, List[NDArray]]]:
 
         self.model.eval()
         features: Dict[str, List[Tensor]] = {"feature1": [], "feature2": [], "feature3": []}
-        artifacts: Dict[str, List[NDArray]] = {"image": [], "mask": []}
+        artifacts: Dict[str, List[Union[str, NDArray]]] = {"stem": [], "image": [], "mask": []}
         pbar = tqdm(self.dataloaders[mode], desc=f"{self.cfg.params.category} - {mode}")
-        for _, imgs, masks in pbar:
+        for stems, imgs, masks in pbar:
 
             with torch.no_grad():
                 feature1, feature2, feature3 = self.model(imgs.to(self.cfg.params.device))
             features["feature1"].append(feature1)
             features["feature2"].append(feature2)
             features["feature3"].append(feature3)
+            artifacts["stem"].extend(stems)
             artifacts["image"].extend(imgs.permute(0, 2, 3, 1).cpu().detach().numpy())
             artifacts["mask"].extend(masks.cpu().detach().numpy())
 

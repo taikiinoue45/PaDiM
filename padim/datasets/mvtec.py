@@ -3,10 +3,12 @@ from typing import List, Tuple, Union
 
 import cv2
 import matplotlib.pyplot as plt
+import mlflow
 import pandas as pd
 from albumentations import Compose
 from torch import Tensor
 from torch.utils.data import Dataset
+from typing_extensions import Literal
 
 
 class MVTecDataset(Dataset):
@@ -14,6 +16,7 @@ class MVTecDataset(Dataset):
         self,
         data_dir: Union[Path, str],
         query_list: List[str],
+        mode: Literal["train", "test"],
         transforms: Compose,
         debug: bool,
     ) -> None:
@@ -22,10 +25,11 @@ class MVTecDataset(Dataset):
         self.transforms = transforms
         self.debug = debug
 
-        df = pd.read_csv(self.data_dir / "info.csv")
-        self.stem_list = []
-        for q in query_list:
-            self.stem_list += df.query(q)["stem"].tolist()
+        info_csv = pd.read_csv(self.data_dir / "info.csv")
+        df = pd.concat([info_csv.query(q) for q in query_list])
+        df.to_csv(f"{mode}_dataset.csv", index=False)
+        mlflow.log_artifact(f"{mode}_dataset.csv")
+        self.stem_list = df["stem"].tolist()
 
     def __getitem__(self, index: int) -> Tuple[str, Tensor, Tensor]:
 
@@ -44,7 +48,7 @@ class MVTecDataset(Dataset):
         if self.debug:
             self._save_transformed_images(index, data_dict["image"], data_dict["mask"])
 
-        return (img_path, data_dict["image"], data_dict["mask"])
+        return (stem, data_dict["image"], data_dict["mask"])
 
     def _save_transformed_images(self, index: int, img: Tensor, mask: Tensor) -> None:
 

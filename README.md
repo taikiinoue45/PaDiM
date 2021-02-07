@@ -34,7 +34,28 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 
 <br>
 
-## 2. Graphical Results
+## 2. PRO Scores
+
+| category   | Paper | My Implementation |
+| :-         | :-    | :-                |
+| zipper     | 0.959 | 0.935             |
+| wood       | 0.911 | 0.891             |
+| transistor | 0.845 | 0.949             |
+| toothbrush | 0.931 | 0.915             |
+| tile       | 0.860 | 0.826             |
+| screw      | 0.944 | 0.936             |
+| pill       | 0.927 | 0.952             |
+| metal_nut  | 0.856 | 0.933             |
+| leather    | 0.978 | 0.978             |
+| hazelnut   | 0.926 | 0.937             |
+| grid       | 0.946 | 0.866             |
+| carpet     | 0.962 | 0.952             |
+| capsule    | 0.935 | 0.921             |
+| cable      | 0.888 | 0.918             |
+| bottle     | 0.948 | 0.951             |
+
+
+## 3. Graphical Results
 
 ### zipper
 <p align="left">
@@ -113,13 +134,13 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 
 <br>
 
-## 3. Requirements
+## 4. Requirements
 - CUDA 10.2
 - nvidia-docker2
 
 <br>
 
-## 4. Usage
+## 5. Usage
 
 a) Download docker image and run docker container
 ```
@@ -146,7 +167,7 @@ mlflow ui
 
 <br>
 
-## 5. Contacts
+## 6. Contacts
 
 - github: https://github.com/taikiinoue45/
 - twitter: https://twitter.com/taikiinoue45/

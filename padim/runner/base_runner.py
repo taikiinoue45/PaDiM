@@ -34,7 +34,7 @@ class BaseRunner(ABC):
 
         cfg = self.cfg.datasets[key]
         attr = self._get_attr(cfg.name)
-        return attr(**cfg.get("args", {}), transforms=self.transforms[key])
+        return attr(**cfg.get("args", {}), mode=key, transforms=self.transforms[key])
 
     def _init_dataloaders(self, key: str) -> DataLoader:
 
