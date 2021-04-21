@@ -7,14 +7,21 @@ on:
     branches: [main]
 
 jobs:
-  run-experiments:
-    runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
-
+  checkout:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
+  run-experiments:
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+    steps:
+    - name: ls
+      run: ls
+
     - name: Check GPU status
       run: nvidia-smi
+
+
