@@ -16,6 +16,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Run chmod
+      run: chmod -R 777 ./
+
     - name: ls
       run: ls
 
