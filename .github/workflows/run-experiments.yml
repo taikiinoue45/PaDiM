@@ -10,7 +10,7 @@ jobs:
   run-experiments:
     runs-on: self-hosted
     container:
-      image: taikiinoue45/hoge:latest
+      image: taikiinoue45/mvtec:tmp
 
     steps:
     - name: Checkout
