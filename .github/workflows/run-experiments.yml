@@ -25,4 +25,5 @@ jobs:
     - name: Check GPU status
       run: nvidia-smi
 
-
+    - name: Run experiments
+      run: python run.py ./config.yaml params.category=bottle
