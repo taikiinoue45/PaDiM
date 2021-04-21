@@ -1,13 +1,11 @@
 # Additional
-launch.json
-settings.json
-.DS_Store
-Untitled.ipynb
-sandbox.ipynb
-sandbox.py
-*.pth
+.vscode/
 outputs/
 mlruns/
+.DS_Store
+*.ipynb
+sandbox*
+*.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
