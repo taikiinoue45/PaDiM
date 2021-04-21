@@ -49,13 +49,13 @@ dataset:
   train:
     name: mvtec.datasets - MVTecDataset
     args:
-      data_dir: /data/MVTec
+      data_dir: /data
       data_type: train
       category: ${params.category}
   test:
     name: mvtec.datasets - MVTecDataset
     args:
-      data_dir: /data/MVTec
+      data_dir: /data
       data_type: test
       category: ${params.category}
 
