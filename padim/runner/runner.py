@@ -1,27 +1,49 @@
 from typing import Dict, List, Tuple, Union
 
-import mlflow
 import numpy as np
 import torch
 import torch.nn.functional as F
-from numpy import ndarray as NDArray
+from albumentations import Compose
+from mvtec.builder import Builder
+from mvtec.metrics import compute_pro, compute_roc
+from mvtec.utils import savegif
+from numpy import ndarray
+from omegaconf.dictconfig import DictConfig
 from scipy.spatial.distance import mahalanobis
 from torch import Tensor
+from torch.nn import Module
+from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 from typing_extensions import Literal
 
-from padim.runner import BaseRunner
-from padim.utils import (
-    compute_pro_score,
-    compute_roc_score,
-    draw_roc_and_pro_curve,
-    mean_smoothing,
-    savegif,
-)
 
+class Runner(Builder):
+    def __init__(self, cfg: DictConfig) -> None:
 
-class Runner(BaseRunner):
-    def _train(self) -> Tuple[NDArray, NDArray]:
+        super().__init__()
+
+        self.params: DictConfig = cfg.params
+        self.transform: Dict[str, Compose] = {
+            key: Compose(self.build_list_cfg(cfg)) for key, cfg in cfg.transform.items()
+        }
+        self.dataset: Dict[str, Dataset] = {
+            key: self.build_dict_cfg(cfg, transform=self.transform[key])
+            for key, cfg in cfg.dataset.items()
+        }
+        self.dataloader: Dict[str, DataLoader] = {
+            key: self.build_dict_cfg(cfg, dataset=self.dataset[key])
+            for key, cfg in cfg.dataloader.items()
+        }
+        self.model: Module = self.build_dict_cfg(cfg.model).to(self.params.device)
+        self.embedding_ids = torch.randperm(1792)[: self.params.num_embedding]
+
+    def run(self) -> None:
+
+        mean, covariance = self._train()
+        self._test(mean, covariance)
+        torch.save(self.model.state_dict(), "model.pth")
+
+    def _train(self) -> Tuple[ndarray, ndarray]:
 
         embeddings, _ = self._embed("train")
         b, c, h, w = embeddings.shape
@@ -30,54 +52,54 @@ class Runner(BaseRunner):
         means = embeddings.mean(axis=0)
         cvars = np.zeros((c, c, h * w))
         identity = np.identity(c)
-        for i in tqdm(range(h * w), desc=f"{self.cfg.params.category} - compute covariance"):
+        for i in tqdm(range(h * w), desc=f"{self.params.category} - compute covariance"):
             cvars[:, :, i] = np.cov(embeddings[:, :, i], rowvar=False) + 0.01 * identity
 
         return (means, cvars)
 
-    def _test(self, means: NDArray, cvars: NDArray) -> None:
+    def _test(self, means: ndarray, cvars: ndarray) -> None:
 
         embeddings, artifacts = self._embed("test")
         b, c, h, w = embeddings.shape
         embeddings = embeddings.reshape(b, c, h * w)
 
         distances = []
-        for i in tqdm(range(h * w), desc=f"{self.cfg.params.category} - compute distance"):
+        for i in tqdm(range(h * w), desc=f"{self.params.category} - compute distance"):
             mean = means[:, i]
             cvar_inv = np.linalg.inv(cvars[:, :, i])
             distance = [mahalanobis(e[:, i], mean, cvar_inv) for e in embeddings]
             distances.append(distance)
 
-        img_h = self.cfg.params.height
-        img_w = self.cfg.params.width
+        img_h = self.params.height
+        img_w = self.params.width
         amaps = torch.tensor(np.array(distances), dtype=torch.float32)
         amaps = amaps.permute(1, 0).view(b, h, w).unsqueeze(dim=1)  # (b, 1, h, w)
         amaps = F.interpolate(amaps, size=(img_h, img_w), mode="bilinear", align_corners=False)
-        amaps = mean_smoothing(amaps)
+        amaps = self._mean_smoothing(amaps)
         amaps = (amaps - amaps.min()) / (amaps.max() - amaps.min())
         amaps = amaps.squeeze().numpy()
 
-        roc_score = compute_roc_score(amaps, np.array(artifacts["mask"]), artifacts["stem"])
-        pro_score = compute_pro_score(amaps, np.array(artifacts["mask"]))
-        mlflow.log_metrics({"roc_score": roc_score, "pro_score": pro_score})
-        draw_roc_and_pro_curve(roc_score, pro_score)
-        savegif(
-            np.array(artifacts["image"]),
-            amaps,
-            np.array(artifacts["mask"]),
-            artifacts["stem"],
-        )
+        imgs = self._denormalize(np.array(artifacts["image"]))
+        masks = np.array(artifacts["mask"])
 
-    def _embed(self, mode: Literal["train", "test"]) -> Tuple[NDArray, Dict[str, List[NDArray]]]:
+        num_data = len(amaps)
+        y_trues = masks.reshape(num_data, -1).max(axis=1)
+        y_preds = amaps.reshape(num_data, -1).max(axis=1)
+
+        compute_roc(y_trues, y_preds, artifacts["stem"])
+        compute_pro(masks, amaps)
+        savegif(imgs, masks, amaps)
+
+    def _embed(self, mode: Literal["train", "test"]) -> Tuple[ndarray, Dict[str, List[ndarray]]]:
 
         self.model.eval()
         features: Dict[str, List[Tensor]] = {"feature1": [], "feature2": [], "feature3": []}
-        artifacts: Dict[str, List[Union[str, NDArray]]] = {"stem": [], "image": [], "mask": []}
-        pbar = tqdm(self.dataloaders[mode], desc=f"{self.cfg.params.category} - {mode}")
+        artifacts: Dict[str, List[Union[str, ndarray]]] = {"stem": [], "image": [], "mask": []}
+        pbar = tqdm(self.dataloader[mode], desc=f"{self.params.category} - {mode}")
         for stems, imgs, masks in pbar:
 
             with torch.no_grad():
-                feature1, feature2, feature3 = self.model(imgs.to(self.cfg.params.device))
+                feature1, feature2, feature3 = self.model(imgs.to(self.params.device))
             features["feature1"].append(feature1)
             features["feature2"].append(feature2)
             features["feature3"].append(feature3)
@@ -104,3 +126,16 @@ class Runner(BaseRunner):
         z = z.view(b0, -1, h1 * w1)
         z = F.fold(z, kernel_size=(s, s), output_size=(h0, w0), stride=(s, s))
         return z
+
+    def _mean_smoothing(self, amaps: Tensor, kernel_size: int = 21) -> Tensor:
+
+        mean_kernel = torch.ones(1, 1, kernel_size, kernel_size) / kernel_size ** 2
+        mean_kernel = mean_kernel.to(amaps.device)
+        return F.conv2d(amaps, mean_kernel, padding=kernel_size // 2, groups=1)
+
+    def _denormalize(self, imgs: ndarray) -> ndarray:
+
+        mean = np.array(self.params.normalize_mean)
+        std = np.array(self.params.normalize_std)
+        imgs = (imgs * std + mean) * 255.0
+        return imgs.astype(np.uint8)
