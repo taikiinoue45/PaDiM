@@ -1,0 +1,76 @@
+params:
+  device: cuda:0
+  category: bottle
+  height: 224
+  width: 224
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  batch_size: 4
+  num_embedding: 550
+  tracking_uri: file:///dgx/github/PaDiM/padim/mlruns
+  experiment_name: mvtec
+  run_name: ${params.category}
+
+model:
+  name: padim.models - WideResNet50
+  args:
+
+transform:
+  train:
+  - name: albumentations - Resize
+    args:
+      height: ${params.height}
+      width: ${params.width}
+      p: 1
+  - name: albumentations - Normalize
+    args:
+      mean: ${params.normalize_mean}
+      std: ${params.normalize_std}
+      p: 1
+  - name: albumentations.pytorch - ToTensorV2
+    args:
+      p: 1
+  test:
+  - name: albumentations - Resize
+    args:
+      height: ${params.height}
+      width: ${params.width}
+      p: 1
+  - name: albumentations - Normalize
+    args:
+      mean: ${params.normalize_mean}
+      std: ${params.normalize_std}
+      p: 1
+  - name: albumentations.pytorch - ToTensorV2
+    args:
+      p: 1
+
+dataset:
+  train:
+    name: mvtec.datasets - MVTecDataset
+    args:
+      data_dir: /data/MVTec
+      data_type: train
+      category: ${params.category}
+  test:
+    name: mvtec.datasets - MVTecDataset
+    args:
+      data_dir: /data/MVTec
+      data_type: test
+      category: ${params.category}
+
+dataloader:
+  train:
+    name: torch.utils.data - DataLoader
+    args:
+      batch_size: ${params.batch_size}
+      num_workers: ${params.batch_size}
+      pin_memory: true
+      shuffle: true
+  test:
+    name: torch.utils.data - DataLoader
+    args:
+      batch_size: ${params.batch_size}
+      num_workers: ${params.batch_size}
+      pin_memory: true
+      shuffle: true
