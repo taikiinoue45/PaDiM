@@ -1,0 +1,30 @@
+name: build-image
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-image:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Docker login
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Docker build
+        run: |
+          docker build -t taikiinoue45/mvtec:padim -f docker/Dockerfile .
+
+      - name: Docker push
+        uses: actions-hub/docker@master
+        with:
+          args: push taikiinoue45/mvtec:padim
