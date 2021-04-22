@@ -21,7 +21,7 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: rm -rf ./.*
+        run: ls -A1 | xargs rm -rf
 
   pytest:
     needs: [docker-build]
@@ -45,4 +45,4 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: rm -rf ./.*
+        run: ls -A1 | xargs rm -rf
