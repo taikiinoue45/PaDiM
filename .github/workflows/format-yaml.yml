@@ -6,7 +6,6 @@ on:
   pull_requests:
     branches: [main]
 
-
 jobs:
   format-yaml:
     runs-on: ubuntu-latest

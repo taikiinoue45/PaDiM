@@ -34,5 +34,11 @@ jobs:
       if: always()
 
     - name: Run pytest
-      run: pytest -v --cov="."
-      working-directory: ./tests
+      run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
+
+    - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          name: PaDiM
+          fail_ci_if_error: true

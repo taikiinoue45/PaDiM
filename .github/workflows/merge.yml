@@ -26,6 +26,7 @@ jobs:
           tags: taikiinoue45/mvtec:padim
 
   pytest:
+    needs: [docker-build-and-push]
     runs-on: self-hosted
     container:
       image: taikiinoue45/mvtec:padim
@@ -38,6 +39,20 @@ jobs:
         run: chmod -R 777 ./
         if: always()
 
-      - name: Run pytest
-        run: pytest -v --cov="."
-        working-directory: ./tests
+      - name: Run experiments
+        run: |
+          python run.py params.category=bottle
+          python run.py params.category=cable
+          python run.py params.category=capsule
+          python run.py params.category=carpet
+          python run.py params.category=grid
+          python run.py params.category=hazelnut
+          python run.py params.category=leather
+          python run.py params.category=metal_nut
+          python run.py params.category=pill
+          python run.py params.category=screw
+          python run.py params.category=tile
+          python run.py params.category=toothbrush
+          python run.py params.category=transistor
+          python run.py params.category=wood
+          python run.py params.category=zipper
