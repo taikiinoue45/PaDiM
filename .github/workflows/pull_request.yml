@@ -35,7 +35,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run pytest
-        run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
+        run: |
+          pip list
+          pytest -v --cov=padim --cov-report=xml tests/test_run.py
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
