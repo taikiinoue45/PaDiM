@@ -9,15 +9,19 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Docker build
-      uses: docker/build-push-action@v2
-      with:
-        file: docker/Dockerfile
-        push: false
-        tags: taikiinoue45/mvtec:padim
+      - name: Docker build
+        uses: docker/build-push-action@v2
+        with:
+          file: docker/Dockerfile
+          push: false
+          tags: taikiinoue45/mvtec:padim
+
+      - name: Clean up
+        if: always()
+        run: rm -rf *
 
   pytest:
     needs: [docker-build]
@@ -26,19 +30,19 @@ jobs:
       image: taikiinoue45/mvtec:padim
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Run chmod
-      run: chmod -R 777 ./
-      if: always()
+      - name: Run pytest
+        run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
 
-    - name: Run pytest
-      run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          name: PaDiM
+          fail_ci_if_error: true
 
-    - name: Upload coverage to codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
-        name: PaDiM
-        fail_ci_if_error: true
+      - name: Clean up
+        if: always()
+        run: rm -rf *
