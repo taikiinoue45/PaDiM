@@ -1,0 +1,53 @@
+name: pull-requests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  docker-build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Docker build
+      uses: docker/build-push-action@v2
+      with:
+        file: docker/Dockerfile
+        push: false
+        tags: taikiinoue45/mvtec:padim
+
+  pytest:
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run chmod
+      run: chmod -R 777 ./
+
+    - name: Run pytest
+      run: pytest -v --cov="."
+      working-directory: ./tests
+
+
+  run-experiments:
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run chmod
+      run: chmod -R 777 ./
+
+    - name: Run experiments
+      run: |
+        python run.py ./config.yaml params.category=bottle
