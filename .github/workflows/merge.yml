@@ -1,7 +1,7 @@
-name: pull-requests
+name: merge
 
 on:
-  pull_request:
+  push:
     branches: [main]
 
 jobs:
