@@ -20,6 +20,7 @@ jobs:
         tags: taikiinoue45/mvtec:padim
 
   pytest:
+    needs: [docker-build]
     runs-on: self-hosted
     container:
       image: taikiinoue45/mvtec:padim
@@ -30,24 +31,8 @@ jobs:
 
     - name: Run chmod
       run: chmod -R 777 ./
+      if: always()
 
     - name: Run pytest
       run: pytest -v --cov="."
       working-directory: ./tests
-
-
-  run-experiments:
-    runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Run chmod
-      run: chmod -R 777 ./
-
-    - name: Run experiments
-      run: |
-        python run.py ./config.yaml params.category=bottle
