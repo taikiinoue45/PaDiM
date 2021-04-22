@@ -9,21 +9,21 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Docker login
-      uses: actions-hub/docker/login@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: Docker login
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Docker build and push
-      uses: docker/build-push-action@v2
-      with:
-        file: docker/Dockerfile
-        push: true
-        tags: taikiinoue45/mvtec:padim
+      - name: Docker build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: docker/Dockerfile
+          push: true
+          tags: taikiinoue45/mvtec:padim
 
   pytest:
     runs-on: self-hosted
@@ -31,29 +31,13 @@ jobs:
       image: taikiinoue45/mvtec:padim
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Run chmod
-      run: chmod -R 777 ./
+      - name: Run chmod
+        run: chmod -R 777 ./
+        if: always()
 
-    - name: Run pytest
-      run: pytest -v --cov="."
-      working-directory: ./tests
-
-
-  run-experiments:
-    runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Run chmod
-      run: chmod -R 777 ./
-
-    - name: Run experiments
-      run: |
-        python run.py ./config.yaml params.category=bottle
+      - name: Run pytest
+        run: pytest -v --cov="."
+        working-directory: ./tests

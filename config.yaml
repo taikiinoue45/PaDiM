@@ -17,33 +17,33 @@ model:
 
 transform:
   train:
-  - name: albumentations - Resize
-    args:
-      height: ${params.height}
-      width: ${params.width}
-      p: 1
-  - name: albumentations - Normalize
-    args:
-      mean: ${params.normalize_mean}
-      std: ${params.normalize_std}
-      p: 1
-  - name: albumentations.pytorch - ToTensorV2
-    args:
-      p: 1
+    - name: albumentations - Resize
+      args:
+        height: ${params.height}
+        width: ${params.width}
+        p: 1
+    - name: albumentations - Normalize
+      args:
+        mean: ${params.normalize_mean}
+        std: ${params.normalize_std}
+        p: 1
+    - name: albumentations.pytorch - ToTensorV2
+      args:
+        p: 1
   test:
-  - name: albumentations - Resize
-    args:
-      height: ${params.height}
-      width: ${params.width}
-      p: 1
-  - name: albumentations - Normalize
-    args:
-      mean: ${params.normalize_mean}
-      std: ${params.normalize_std}
-      p: 1
-  - name: albumentations.pytorch - ToTensorV2
-    args:
-      p: 1
+    - name: albumentations - Resize
+      args:
+        height: ${params.height}
+        width: ${params.width}
+        p: 1
+    - name: albumentations - Normalize
+      args:
+        mean: ${params.normalize_mean}
+        std: ${params.normalize_std}
+        p: 1
+    - name: albumentations.pytorch - ToTensorV2
+      args:
+        p: 1
 
 dataset:
   train:
