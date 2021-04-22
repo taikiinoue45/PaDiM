@@ -36,7 +36,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          pip list
+          pip install pytest pytest-cov
           pytest -v --cov=padim --cov-report=xml tests/test_run.py
 
       - name: Upload coverage to codecov
