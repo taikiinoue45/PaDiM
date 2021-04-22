@@ -18,6 +18,7 @@ jobs:
           file: docker/Dockerfile
           push: false
           tags: taikiinoue45/mvtec:padim
+          no-cache: true
 
       - name: Clean up
         if: always()
