@@ -69,21 +69,21 @@ jobs:
 
       - name: Run experiments
         run: |
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=bottle
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=cable
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=capsule
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=carpet
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=grid
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=hazelnut
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=leather
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=metal_nut
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=pill
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=screw
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=tile
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=toothbrush
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=transistor
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=wood
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/PaDiM params.category=zipper
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=cable
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=capsule
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=carpet
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=grid
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=hazelnut
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=leather
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=metal_nut
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=pill
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=screw
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=tile
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=toothbrush
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=transistor
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=wood
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=zipper
 
       - name: Git add, commit, and push
         run: |
