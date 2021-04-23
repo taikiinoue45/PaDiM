@@ -21,9 +21,9 @@ def test_checksum() -> None:
         "a7f3a19bf4f9bc916cae1fe88f7f4201603ce984c46db487ec9bb4e8449248dc",
     ]
 
-    for file_path, fixed_checksum in zip(file_path_list, checksum_list):
+    for file_path, correct_checksum in zip(file_path_list, checksum_list):
 
         with open(file_path, "rb") as f:
             checksum = hashlib.sha256(f.read()).hexdigest()
 
-        assert fixed_checksum == checksum, f"{file_path} checksum is incorrect."
+        assert correct_checksum == checksum, f"{file_path} checksum is incorrect."
