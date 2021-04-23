@@ -22,18 +22,18 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: |
-          ls -A1 | xargs rm -rf
+        run: ls -A1 | xargs rm -rf
 
   pytest:
     needs: [docker-build]
     runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Docker run
+        uses: docker run -it --rm taikiinoue45/mvtec:padim /bin/bash
 
       - name: Run pytest
         run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
@@ -47,5 +47,4 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: |
-          ls -A1 | xargs rm -rf
+        run: ls -A1 | xargs rm -rf
