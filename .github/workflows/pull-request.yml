@@ -24,7 +24,6 @@ jobs:
         if: always()
         run: |
           ls -A1 | xargs rm -rf
-          docker rmi -f `docker images -q`
 
   pytest:
     needs: [docker-build]
@@ -50,4 +49,3 @@ jobs:
         if: always()
         run: |
           ls -A1 | xargs rm -rf
-          docker rmi -f `docker images -q`
