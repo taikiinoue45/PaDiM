@@ -30,10 +30,6 @@ jobs:
     container:
       image: taikiinoue45/mvtec:padim
 
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,11 +47,27 @@ jobs:
           name: PaDiM
           fail_ci_if_error: true
 
+      - name: Clean up
+        if: always()
+        run: ls -A1 | xargs rm -rf
+
+  run-experiments:
+    needs: [docker-build, pytest]
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Run experiments
         run: python run.py params.category=bottle
 
       - name: Clean up
         if: always()
         run: ls -A1 | xargs rm -rf
-
-
