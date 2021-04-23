@@ -7,8 +7,8 @@ params:
   normalize_std: [0.229, 0.224, 0.225]
   batch_size: 4
   num_embedding: 550
-  tracking_uri: file:///dgx/github/PaDiM/padim/mlruns
-  experiment_name: mvtec
+  tracking_uri: databricks
+  experiment_name: /Users/inoue@nablas.com/PaDiM
   run_name: ${params.category}
 
 model:
