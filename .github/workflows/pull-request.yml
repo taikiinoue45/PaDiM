@@ -16,7 +16,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: docker/Dockerfile
-          push: false
+          push: true
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
@@ -27,10 +27,12 @@ jobs:
   pytest:
     needs: [docker-build]
     runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
 
     steps:
-      - name: Docker run
-        run: docker run -t taikiinoue45/mvtec:padim /bin/bash
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Run pytest
         run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
