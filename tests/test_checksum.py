@@ -15,10 +15,10 @@ def test_checksum() -> None:
     checksum_list = [
         "04e248ab755666004e01a596ccdd9729e70609b9a9944a613e6dff5909e9ab81",
         "a7f3a19bf4f9bc916cae1fe88f7f4201603ce984c46db487ec9bb4e8449248dc",
-        "981bd32ad4febe14a44c1c7a0a00245c747373f39d6e22884f80f018bebc68c8",
-        "e18032c3c704dc1a391d72cf8bded1c98b0dffcc80d00e84f5a78daf53e4cc0f",
-        "71f032b5778234c1a62114f0937a5685bf83a1e2a62682fc933c55f7623b3e80",
-        "910875de1c4d071773451fa8c85a6fc2896bf041d4b41075ac6860bb6ed927c3",
+        "8006c70f9e8f68fe2a901861b54cbd42644503b707687964fe172f13b7f2d67f",
+        "72af9c07b0020181af7d963a9aa558d17529d7e6460e94f9d4bc6806492e7875",
+        "2252aa079e03fdf65f9d31c08ed06c684728836f0f20706cfe8f5c217d018dc6",
+        "c6e7846d34dc9ea3d1f17828758eb43b4c754e89a411227b93e8cd90a28e2aa6",
     ]
 
     for file_path, correct_checksum in zip(file_path_list, checksum_list):
@@ -26,4 +26,4 @@ def test_checksum() -> None:
         with open(file_path, "rb") as f:
             checksum = hashlib.sha256(f.read()).hexdigest()
 
-        assert correct_checksum == checksum, f"{file_path} checksum is incorrect."
+        assert correct_checksum == checksum, f"{file_path} checksum ({checksum}) is incorrect."
