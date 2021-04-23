@@ -38,8 +38,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Check fixed files
+        run: pytest -v tests/test_fixed_files.py
+
       - name: Run pytest
-        run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
+        run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
