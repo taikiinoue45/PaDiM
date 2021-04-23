@@ -17,20 +17,20 @@ config_name = str(Path(sys.argv[1]).stem)
 sys.argv.pop(1)
 
 
-@hydra.main(config_path=config_path, config_name=config_name)
-def main(cfg: DictConfig) -> None:
+@hydra.main(config_path=".", config_name="config")
+def run(cfg: DictConfig) -> None:
 
-    # mlflow.set_tracking_uri(cfg.params.tracking_uri)
-    # mlflow.set_experiment(cfg.params.experiment_name)
-    # mlflow.start_run(run_name=cfg.params.run_name)
-    # mlflow.log_params(cfg.params)
-    # mlflow.log_param("cwd", os.getcwd())
+    mlflow.set_tracking_uri(cfg.params.tracking_uri)
+    mlflow.set_experiment(cfg.params.experiment_name)
+    mlflow.start_run(run_name=cfg.params.run_name)
+    mlflow.log_params(cfg.params)
+    mlflow.log_param("cwd", os.getcwd())
+    mlflow.log_artifacts(".hydra", "hydra")
 
     runner = Runner(cfg)
     runner.run()
 
-    mlflow.log_artifacts(".hydra", "hydra")
-
 
 if __name__ == "__main__":
-    main()
+
+    run()

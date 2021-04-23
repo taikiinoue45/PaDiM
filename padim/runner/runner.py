@@ -86,9 +86,9 @@ class Runner(Builder):
         y_trues = masks.reshape(num_data, -1).max(axis=1)
         y_preds = amaps.reshape(num_data, -1).max(axis=1)
 
-        compute_roc(y_trues, y_preds, artifacts["stem"])
-        compute_pro(masks, amaps)
-        savegif(imgs, masks, amaps)
+        compute_roc(self.params.category, y_trues, y_preds, artifacts["stem"])
+        compute_pro(self.params.category, masks, amaps)
+        savegif(self.params.category, imgs, masks, amaps)
 
     def _embed(self, mode: Literal["train", "test"]) -> Tuple[ndarray, Dict[str, List[ndarray]]]:
 

@@ -1,0 +1,73 @@
+name: pull_request
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  docker-build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Docker build
+        uses: docker/build-push-action@v2
+        with:
+          file: docker/Dockerfile
+          push: true
+          tags: taikiinoue45/mvtec:padim
+          no-cache: true
+
+      - name: Clean up
+        if: always()
+        run: ls -A1 | xargs rm -rf
+
+  pytest:
+    needs: [docker-build]
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test checksum
+        run: pytest -v tests/test_checksum.py
+
+      - name: Test coverage
+        run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          name: PaDiM
+          fail_ci_if_error: true
+
+      - name: Clean up
+        if: always()
+        run: ls -A1 | xargs rm -rf
+
+  run-experiments:
+    needs: [docker-build, pytest]
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run experiments
+        run: python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+
+      - name: Clean up
+        if: always()
+        run: ls -A1 | xargs rm -rf
