@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Docker run
-        uses: docker run -it --rm taikiinoue45/mvtec:padim /bin/bash
+        run: docker run -it --rm taikiinoue45/mvtec:padim /bin/bash
 
       - name: Run pytest
         run: pytest -v --cov=padim --cov-report=xml tests/test_run.py
