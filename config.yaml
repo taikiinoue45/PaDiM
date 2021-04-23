@@ -8,8 +8,8 @@ params:
   batch_size: 4
   num_embedding: 550
   tracking_uri: databricks
-  experiment_name: /Users/inoue@nablas.com/PaDiM
-  run_name: ${params.category}
+  experiment_name: /Users/inoue@nablas.com/MVTec
+  run_name: PaDiM
 
 model:
   name: padim.models - WideResNet50
