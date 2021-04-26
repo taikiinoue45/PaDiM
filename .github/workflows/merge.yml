@@ -12,23 +12,17 @@ jobs:
 
     steps:
       - name: Checkout
-        run: git clone https://github.com/taikiinoue45/PaDiM.git
+        run: |
+          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
+          git checkout $GITHUB_SHA
 
-      - name: Checkout
-        run: git checkout $GITHUB_SHA
-        working-directory: ./PaDiM
-
-      # - name: Docker build and push
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     file: docker/Dockerfile
-      #     push: true
-      #     tags: taikiinoue45/mvtec:padim
-      #     no-cache: true
-
-      # - name: Change mode
-      #   if: always()
-      #   run: rm -rf PaDiM
+      - name: Docker build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: docker/Dockerfile
+          push: true
+          tags: taikiinoue45/mvtec:padim
+          no-cache: true
 
   # pytest:
   #   needs: [docker-build]
