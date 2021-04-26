@@ -44,10 +44,10 @@ jobs:
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
         with:
-          working-directory: /app/PaDiM
           file: ./coverage.xml
           name: PaDiM
           fail_ci_if_error: true
+          working-directory: /app/PaDiM
 
       - name: Clean up
         if: always()
@@ -66,9 +66,39 @@ jobs:
     steps:
       - name: Run experiments
         run: |
-          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=bottle
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=cable
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=capsule
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=carpet
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=grid
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=hazelnut
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=leather
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=metal_nut
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=pill
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=screw
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=tile
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=toothbrush
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=transistor
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=wood
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/sandbox params.run_name=PaDiM params.category=zipper
         working-directory: /app/PaDiM
 
       - name: Clean up
         if: always()
         run: ls -A1 | xargs rm -rf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
