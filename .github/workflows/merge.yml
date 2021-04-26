@@ -22,10 +22,6 @@ jobs:
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
-      - name: Change mode
-        if: always()
-        run: chmod -R 777 /__w/
-
   pytest:
     needs: [docker-build]
     runs-on: self-hosted
