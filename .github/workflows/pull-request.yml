@@ -19,7 +19,7 @@ jobs:
         with:
           file: docker/Dockerfile
           push: true
-          tags: taikiinoue45/mvtec:padim
+          tags: taikiinoue45/mvtec:sandbox
           no-cache: true
 
       - name: Clean up
@@ -30,46 +30,45 @@ jobs:
     needs: [docker-build]
     runs-on: self-hosted
     container:
-      image: taikiinoue45/mvtec:padim
+      image: taikiinoue45/mvtec:sandbox
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Test checksum
         run: pytest -v tests/test_checksum.py
+        working-directory: /app/PaDiM
 
       - name: Test coverage
         run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+        working-directory: /app/PaDiM
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
         with:
-          file: ./coverage.xml
+          file: /app/PaDiM/coverage.xml
           name: PaDiM
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
-      - name: Change mode
+      - name: Clean up
         if: always()
-        run: chmod -R 777 /__w
+        run: ls -A1 | xargs rm -rf
 
   run-experiments:
     needs: [docker-build, pytest]
     runs-on: self-hosted
     container:
-      image: taikiinoue45/mvtec:padim
+      image: taikiinoue45/mvtec:sandbox
 
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Run experiments
-        run: python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+        run: |
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+        working-directory: /app/PaDiM
 
-      - name: Change mode
+      - name: Clean up
         if: always()
-        run: chmod -R 777 /__w
+        run: ls -A1 | xargs rm -rf
