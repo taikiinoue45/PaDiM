@@ -22,7 +22,7 @@ jobs:
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
-      - name: Clean up
+      - name: Change mode
         if: always()
         run: chmod -R 777 /home/inoue/actions-runner/PaDiM/_work
 
@@ -49,7 +49,7 @@ jobs:
           name: PaDiM
           fail_ci_if_error: true
 
-      - name: Clean up
+      - name: Change mode
         if: always()
         run: chmod -R 777 /__w
 
@@ -87,7 +87,7 @@ jobs:
           git commit -m "Update assets by github actions"
           git push origin main
 
-      - name: Clean up
+      - name: Change mode
         if: always()
         run: chmod -R 777 /__w
 
