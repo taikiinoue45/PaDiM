@@ -24,50 +24,67 @@ jobs:
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
-  # pytest:
-  #   needs: [docker-build]
-  #   runs-on: self-hosted
-  #   container:
-  #     image: taikiinoue45/mvtec:padim
+      - name: Clean up
+        run: ls -A1 | xargs rm -rf
 
-  #   env:
-  #     DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-  #     DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+  pytest:
+    needs: [docker-build]
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout
+        run: |
+          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
+          git checkout $GITHUB_SHA
 
-  #     - name: Test checksum
-  #       run: pytest -v tests/test_checksum.py
+      - name: Test checksum
+        run: pytest -v tests/test_checksum.py
 
-  #     - name: Test coverage
-  #       run: |
-  #         pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
-  #         rm -rf outputs/
+      - name: Test coverage
+        run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
 
-  #     - name: Upload coverage to codecov
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         file: ./coverage.xml
-  #         name: PaDiM
-  #         fail_ci_if_error: true
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          name: PaDiM
+          fail_ci_if_error: true
 
-  #     - name: Run experiments
-  #       run: |
-  #         python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+      - name: Clean up
+        run: ls -A1 | xargs rm -rf
 
-  #     - name: Git add, commit, and push
-  #       run: |
-  #         mv outputs/*/*/*.gif assets/
-  #         mv outputs/*/*/*_roc_curve.csv assets/
-  #         mv outputs/*/*/*_pro_curve.csv assets/
-  #         git config --local user.name "taikiinoue45"
-  #         git config --local user.email "taikiinoue45@gmail.com"
-  #         git add assets/*
-  #         git commit -m "Update assets by github actions"
-  #         git push origin main
+  run-experiments:
+    needs: [docker-build, pytest]
+    runs-on: self-hosted
+    container:
+      image: taikiinoue45/mvtec:padim
 
-  #     - name: Change mode
-  #       if: always()
-  #       run: chmod -R 777 /__w
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout
+        run: |
+          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
+          git checkout $GITHUB_SHA
+
+      - name: Run experiments
+        run: |
+          python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
+
+      - name: Git add, commit, and push
+        run: |
+          mv outputs/*/*/*.gif assets/
+          mv outputs/*/*/*_roc_curve.csv assets/
+          mv outputs/*/*/*_pro_curve.csv assets/
+          git config --local user.name "taikiinoue45"
+          git config --local user.email "taikiinoue45@gmail.com"
+          git add assets/*
+          git commit -m "Update assets by github actions"
+          git push origin main
+
+      - name: Clean up
+        run: ls -A1 | xargs rm -rf
