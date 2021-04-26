@@ -22,6 +22,10 @@ jobs:
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
+      - name: Clean up
+        if: always()
+        run: ls -A1 /__w/ | xargs rm -rf
+
   pytest:
     needs: [docker-build]
     runs-on: self-hosted
@@ -45,9 +49,9 @@ jobs:
           name: PaDiM
           fail_ci_if_error: true
 
-      - name: Change mode
+      - name: Clean up
         if: always()
-        run: chmod -R 777 /__w/
+        run: ls -A1 /__w/ | xargs rm -rf
 
   run-experiments:
     needs: [docker-build, pytest]
@@ -81,6 +85,6 @@ jobs:
           git commit -m "Update assets by github actions"
           git push origin main
 
-      - name: Change mode
+      - name: Clean up
         if: always()
-        run: chmod -R 777 /__w/
+        run: ls -A1 /__w/ | xargs rm -rf
