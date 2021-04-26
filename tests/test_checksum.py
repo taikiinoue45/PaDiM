@@ -14,10 +14,10 @@ def test_checksum() -> None:
 
     checksum_list = [
         "04e248ab755666004e01a596ccdd9729e70609b9a9944a613e6dff5909e9ab81",
-        "a7f3a19bf4f9bc916cae1fe88f7f4201603ce984c46db487ec9bb4e8449248dc",
+        "a619c475d0ae8dfd4d41764ff79cd0e78fd86acbc50c8dfdb372908506995483",
         "981bd32ad4febe14a44c1c7a0a00245c747373f39d6e22884f80f018bebc68c8",
         "e18032c3c704dc1a391d72cf8bded1c98b0dffcc80d00e84f5a78daf53e4cc0f",
-        "770f472fa721755a5211bae3b31fa2f0e22dc6e7c86e627ebf41778731a47b94",
+        "83060965f906376d0dcdd36ad76de3cc9cb574475f24ede1e567b2ef23d74626",
         "838b6d10b3a4f54d0ebff2a6df2428854c4b439af211ebe896cc211b21d3b99a",
     ]
 
@@ -26,4 +26,4 @@ def test_checksum() -> None:
         with open(file_path, "rb") as f:
             checksum = hashlib.sha256(f.read()).hexdigest()
 
-        assert correct_checksum == checksum, f"{file_path} checksum ({checksum}) is incorrect."
+        assert correct_checksum == checksum, f"{file_path} checksum {checksum} is incorrect."
