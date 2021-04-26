@@ -40,7 +40,9 @@ jobs:
         run: pytest -v tests/test_checksum.py
 
       - name: Test coverage
-        run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+        run: |
+          pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+          rm -rf outputs/
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
@@ -48,29 +50,6 @@ jobs:
           file: ./coverage.xml
           name: PaDiM
           fail_ci_if_error: true
-
-      - name: Change mode
-        if: always()
-        run: chmod -R 777 /__w
-
-
-
-  run-experiments:
-    needs: [docker-build, pytest]
-    runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
-
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: ls -la
-        run: ls -la
 
       - name: Run experiments
         run: |
@@ -90,4 +69,3 @@ jobs:
       - name: Change mode
         if: always()
         run: chmod -R 777 /__w
-
