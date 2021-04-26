@@ -22,6 +22,10 @@ jobs:
           tags: taikiinoue45/mvtec:padim
           no-cache: true
 
+      - name: Clean up
+        if: always()
+        run: chmod -R 777 /home/inoue/actions-runner/PaDiM/_work
+
   pytest:
     needs: [docker-build]
     runs-on: self-hosted
@@ -45,6 +49,12 @@ jobs:
           name: PaDiM
           fail_ci_if_error: true
 
+      - name: Clean up
+        if: always()
+        run: chmod -R 777 /__w
+
+
+
   run-experiments:
     needs: [docker-build, pytest]
     runs-on: self-hosted
@@ -56,12 +66,6 @@ jobs:
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
-      - name: Clean up
-        if: always()
-        run: |
-          cd /__w
-          ls -A1 | xargs rm -rf
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -82,3 +86,8 @@ jobs:
           git add assets/*
           git commit -m "Update assets by github actions"
           git push origin main
+
+      - name: Clean up
+        if: always()
+        run: chmod -R 777 /__w
+
