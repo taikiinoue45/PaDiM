@@ -17,8 +17,8 @@ def test_checksum() -> None:
         "a7f3a19bf4f9bc916cae1fe88f7f4201603ce984c46db487ec9bb4e8449248dc",
         "981bd32ad4febe14a44c1c7a0a00245c747373f39d6e22884f80f018bebc68c8",
         "e18032c3c704dc1a391d72cf8bded1c98b0dffcc80d00e84f5a78daf53e4cc0f",
-        "9bc9ff16c91f34ccfb5fbf69cdb8dfdc3305433088fdb89f39f0f74760849794",
-        "e738fdaa030dcd770143f21d6c3dbb8f9c9537c0e944ab0d5c18087344029b47",
+        "770f472fa721755a5211bae3b31fa2f0e22dc6e7c86e627ebf41778731a47b94",
+        "838b6d10b3a4f54d0ebff2a6df2428854c4b439af211ebe896cc211b21d3b99a",
     ]
 
     for file_path, correct_checksum in zip(file_path_list, checksum_list):

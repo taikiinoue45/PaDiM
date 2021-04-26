@@ -44,9 +44,9 @@ jobs:
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
         with:
-          file: /app/PaDiM/coverage.xml
+          file: ./coverage.xml
+          directory: /app/PaDiM
           name: PaDiM
-          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
       - name: Clean up
