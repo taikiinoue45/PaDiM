@@ -68,7 +68,7 @@ jobs:
 
       - name: Checkout
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE
+          git clone https://$GITHUB_ACTOR:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE
           git checkout $GITHUB_SHA
 
       - name: Run experiments
