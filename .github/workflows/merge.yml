@@ -11,12 +11,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Clean up
-        if: always()
-        run: |
-          cd /home/inoue/actions-runner/PaDiM/_work
-          ls -A1 | xargs rm -rf
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -35,12 +29,6 @@ jobs:
       image: taikiinoue45/mvtec:padim
 
     steps:
-      - name: Clean up
-        if: always()
-        run: |
-          cd /__w
-          ls -A1 | xargs rm -rf
-
       - name: Checkout
         uses: actions/checkout@v2
 
