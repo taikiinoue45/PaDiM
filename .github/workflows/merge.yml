@@ -67,6 +67,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
 
+      - name: ls -la
+        run: ls -la
+
       - name: Run experiments
         run: |
           python run.py params.tracking_uri=databricks params.experiment_name=/Users/inoue@nablas.com/MVTec params.run_name=PaDiM params.category=bottle
