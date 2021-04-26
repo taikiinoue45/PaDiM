@@ -25,6 +25,7 @@ jobs:
           no-cache: true
 
       - name: Clean up
+        if: always()
         run: ls -A1 | xargs rm -rf
 
   pytest:
@@ -53,6 +54,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Clean up
+        if: always()
         run: ls -A1 | xargs rm -rf
 
   run-experiments:
@@ -87,4 +89,5 @@ jobs:
           git push origin main
 
       - name: Clean up
+        if: always()
         run: ls -A1 | xargs rm -rf
