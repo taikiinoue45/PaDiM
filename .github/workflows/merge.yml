@@ -32,6 +32,10 @@ jobs:
     container:
       image: taikiinoue45/mvtec:padim
 
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
