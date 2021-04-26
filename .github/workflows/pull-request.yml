@@ -22,7 +22,9 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: ls -A1 /__w/ | xargs rm -rf
+        run:
+          cd /home/inoue/actions-runner/PaDiM/_work
+          ls -A1 | xargs rm -rf
 
   pytest:
     needs: [docker-build]
@@ -49,7 +51,9 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: ls -A1 /__w/ | xargs rm -rf
+        run: |
+          cd /__w
+          ls -A1 | xargs rm -rf
 
   run-experiments:
     needs: [docker-build, pytest]
@@ -70,4 +74,6 @@ jobs:
 
       - name: Clean up
         if: always()
-        run: ls -A1 /__w/ | xargs rm -rf
+        run: |
+          cd /__w
+          ls -A1 | xargs rm -rf
