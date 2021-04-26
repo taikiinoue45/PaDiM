@@ -24,7 +24,7 @@ jobs:
 
       - name: Clean up
         if: always()
-        run:
+        run: |
           cd /home/inoue/actions-runner/PaDiM/_work
           ls -A1 | xargs rm -rf
 
@@ -53,7 +53,7 @@ jobs:
 
       - name: Clean up
         if: always()
-        run:
+        run: |
           cd /__w
           ls -A1 | xargs rm -rf
 
@@ -91,6 +91,6 @@ jobs:
 
       - name: Clean up
         if: always()
-        run:
+        run: |
           cd /__w
           ls -A1 | xargs rm -rf
