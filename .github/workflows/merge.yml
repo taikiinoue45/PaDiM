@@ -7,58 +7,55 @@ on:
       - assets/**
 
 jobs:
-  docker-build:
-    runs-on: self-hosted
+  # docker-build:
+  #   runs-on: self-hosted
 
-    steps:
-      - name: Checkout
-        run: |
-          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
-          git checkout $GITHUB_SHA
+  #   steps:
+  #     - name: Checkout
+  #       run: |
+  #         git clone https://github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE
+  #         git checkout $GITHUB_SHA
 
-      - name: Docker build and push
-        uses: docker/build-push-action@v2
-        with:
-          file: docker/Dockerfile
-          push: true
-          tags: taikiinoue45/mvtec:padim
-          no-cache: true
+  #     - name: Docker build and push
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         file: docker/Dockerfile
+  #         push: true
+  #         tags: taikiinoue45/mvtec:padim
+  #         no-cache: true
 
-      - name: Clean up
-        if: always()
-        run: ls -A1 | xargs rm -rf
+  #     - name: Clean up
+  #       if: always()
+  #       run: ls -A1 | xargs rm -rf
 
-  pytest:
-    needs: [docker-build]
-    runs-on: self-hosted
-    container:
-      image: taikiinoue45/mvtec:padim
+  # pytest:
+  #   needs: [docker-build]
+  #   runs-on: self-hosted
+  #   container:
+  #     image: taikiinoue45/mvtec:padim
 
-    steps:
-      - name: Checkout
-        run: |
-          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
-          git checkout $GITHUB_SHA
+  #   steps:
+  #     - name: Test checksum
+  #       run: pytest -v tests/test_checksum.py
+  #       working-directory: /app/PaDiM
 
-      - name: Test checksum
-        run: pytest -v tests/test_checksum.py
+  #     - name: Test coverage
+  #       run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+  #       working-directory: /app/PaDiM
 
-      - name: Test coverage
-        run: pytest -v --cov=padim --cov-report=xml tests/test_coverage.py
+  #     - name: Upload coverage to codecov
+  #       uses: codecov/codecov-action@v1
+  #       with:
+  #         file: /app/PaDiM/coverage.xml
+  #         name: PaDiM
+  #         fail_ci_if_error: true
 
-      - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.xml
-          name: PaDiM
-          fail_ci_if_error: true
-
-      - name: Clean up
-        if: always()
-        run: ls -A1 | xargs rm -rf
+  #     - name: Clean up
+  #       if: always()
+  #       run: ls -A1 | xargs rm -rf
 
   run-experiments:
-    needs: [docker-build, pytest]
+    # needs: [docker-build, pytest]
     runs-on: self-hosted
     container:
       image: taikiinoue45/mvtec:padim
@@ -68,9 +65,10 @@ jobs:
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
+
       - name: Checkout
         run: |
-          git clone https://github.com/taikiinoue45/PaDiM.git $GITHUB_WORKSPACE
+          git clone https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE
           git checkout $GITHUB_SHA
 
       - name: Run experiments
@@ -85,7 +83,7 @@ jobs:
           git config --local user.name "taikiinoue45"
           git config --local user.email "taikiinoue45@gmail.com"
           git add assets/*
-          git commit -m "Update assets by github actions"
+          git commit -m "Update assets/ by github actions"
           git push origin main
 
       - name: Clean up
