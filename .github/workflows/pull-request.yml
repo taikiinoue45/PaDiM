@@ -44,8 +44,8 @@ jobs:
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
         with:
+          working-directory: /app/PaDiM
           file: ./coverage.xml
-          directory: /app/PaDiM
           name: PaDiM
           fail_ci_if_error: true
 
