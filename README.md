@@ -146,25 +146,13 @@ PyTorch re-implementation of [PaDiM: a Patch Distribution Modeling Framework for
 a) Download docker image and run docker container
 ```
 docker pull taikiinoue45/mvtec:padim
-docker run --runtime nvidia -it --workdir /app --network host taikiinoue45/mvtec:padim /usr/bin/zsh
+docker run --runtime nvidia -it taikiinoue45/mvtec:padim /bin/bash
 ```
 
-b) Download this repository
+b) Run Experiment
 ```
-git clone https://github.com/taikiinoue45/PaDiM.git
-cd /app/PaDiM/padim
+python run.py ./config.yaml params.category=bottle params.tracking_uri=file:///app/PaDiM/mlruns
 ```
-
-c) Run experiments
-```
-sh run.sh
-```
-
-d) Visualize experiments
-```
-mlflow ui
-```
-
 
 <br>
 
